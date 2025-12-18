@@ -7,7 +7,7 @@ A **simple implementation of the DistributiveWorker class** with full event logg
 
 ## Overview
 
-This repository is designed as a tutorial rather than a production-ready system. The code is intended to be clear and easy to understand, allowing developers to modify it as needed. Many configuration values are hard-coded (worker id, deposit account, compute groups, minimum wage, etc.), but they can be adapted or parameterized for more advanced use cases.
+This repository is designed as a tutorial rather than a production-ready system. The code is intended to be clear and easy to understand, allowing developers to modify it as needed. Many configuration values are hard-coded (worker id, deposit account, compute groups, minimum wage, etc.), but they can and should be adapted or parameterized for more advanced use cases.
 
 If you encounter any issues or have questions, you can reach the team via:
 
@@ -17,7 +17,7 @@ If you encounter any issues or have questions, you can reach the team via:
 
 ## Features
 
-- Full DCP Web Worker setup with `identity` and `deposit account` configuration
+- Full DistributiveWorker setup with `identity` and `deposit account` configuration
 - Earn `Compute Credits` into your deposit account
 - Support for multiple `compute groups`
 - Control over `CPU/GPU cores`, `utilization`, and `minimum wage`
@@ -45,7 +45,7 @@ If you encounter any issues or have questions, you can reach the team via:
 
 ### Usage
 
-1. Open `dcp-web-worker-template.html` in your browser.
+1. Open `index.html` in your browser.
 2. Click the **Work!** button to start the worker.
 3. The worker logs all events to the textarea on the page in real-time.
 4. Click **Stop!** to halt the worker.
@@ -125,4 +125,4 @@ MIT License – feel free to use and modify for your own DCP projects.
 
 ## Questions?
 
-Explore the Distributive Compute Platform [documentation](https://docs.dcp.dev) for more details on APIs and advanced configurations.
+Explore the Distributive Compute Platform [documentation](https://docs.dcp.dev) for more details on the Compute, Wallet, and Worker APIs and advanced configurations.
