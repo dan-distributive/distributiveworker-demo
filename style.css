@@ -28,9 +28,23 @@ body {
   min-height: 0; /* ensures textarea can stretch */
 }
 
+.title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.title-logo {
+  height: 28px;       /* scale here */
+  width: auto;        /* preserve aspect ratio */
+  flex-shrink: 0;     /* prevent shrinking */
+}
+
+
 /* =========================================================
    Typography
    ========================================================= */
+   
 .title {
   margin: 10px 0 10px;
   font-weight: 600;
@@ -68,12 +82,24 @@ body {
   letter-spacing: 0.2px;
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 2px;
   white-space: nowrap;
 }
 
 .link:hover {
   text-decoration-thickness: 2px;
+}
+
+.worker-key {
+  color: #808080;
+  font-family: "Fira Code", monospace;
+  font-size: clamp(12px, 1.5vw, 14px);
+}
+
+.worker-value {
+  color: #6ec495;
+  font-family: "Fira Code", monospace;
+  font-size: clamp(12px, 1.5vw, 14px);
 }
 
 /* =========================================================

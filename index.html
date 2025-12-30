@@ -17,16 +17,21 @@
 
       <!-- Header -->
       <header>
-        <h1 class="title">DistributiveWorker demo</h1>
+        <div class="title-row">
+          <img
+            src="dcp-logo.svg"
+            alt="DCP logo"
+            class="title-logo"
+          />
+          <h1 class="title">DistributiveWorker demo</h1>
+        </div>
 
         <div class="text-with-link">
           <p class="text">
             This webpage demonstrates a working integration of the DistributiveWorker
             class. The worker joins the DCP Global Compute Group, deposits earned credits
             into a pre-configured account, logs events, and more. Check out the GitHub
-            source to explore and modify it yourself.
-          </p>
-
+            source to explore and modify it yourself:
           <a
             href="https://github.com/dan-distributive/distributiveworker-demo"
             class="link"
@@ -50,8 +55,34 @@
               />
             </svg>
           </a>
+        </p>
         </div>
       </header>
+
+      <!-- Worker info -->
+      <div class="worker-info">
+        <p class="worker-key">
+          - Worker config -
+        </p>
+        <p class="worker-key">
+          Compute groups:
+          <span class="worker-value">
+            DCP Global
+          </span>
+        </p>
+        <p class="worker-key">
+          Deposit account:
+          <span class="worker-value">
+            0x079dac0612c710ab4e975dab7171c7e4bef78c5a
+          </span>
+        </p>
+        <p class="worker-key">
+          Credits earned:
+          <span id="total-earned" class="worker-value">
+            0.000 ⊇
+          </span>
+        </p>
+      </div>
 
       <!-- Button row -->
       <div class="button-row">
@@ -77,6 +108,7 @@
         </button>
       </div>
 
+
       <!-- Console (fills remaining height) -->
       <section class="textarea-wrap">
         <textarea
@@ -89,5 +121,6 @@
   </div>
 
   <script src="worker.js"></script>
+
 </body>
 </html>

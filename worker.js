@@ -25,7 +25,7 @@ async function toggleWorker() {
       
       // Set the DCP Bank account where compute credits earned from work are deposited
       paymentAddress: new dcp.wallet.Address(
-        "0xd9e31076e34c34da0d902eb01b1e7ae622791941" // or (await dcp.wallet.get()).address
+        "0x079dac0612c710ab4e975dab7171c7e4bef78c5a" // or (await dcp.wallet.get()).address
       ),
 
       /*
@@ -120,13 +120,25 @@ async function toggleWorker() {
     });
 
     // Payment received for completed slices
+    let totalEarned = 0;
+    const totalEarnedEl = document.getElementById("total-earned");
     worker.on("payment", (payment, paymentAccount, jobAddress, slice) => {
+      totalEarned += Number(payment);
+      if (totalEarnedEl) {
+        totalEarnedEl.textContent = `${totalEarned.toFixed(3)} ⊇`;
+      }
       log(
         `[worker.payment] ` +
         `payment: ${payment} ⊇, ` +
         `depositAccount: ${paymentAccount}, ` +
         `jobId: ${jobAddress}, ` +
-        `slice: ${slice}`);
+        `slice: ${slice}`
+      );
+    });
+
+    // Worker connected to scheduler
+    worker.on("connect", url => {
+      log(`[worker.connect] connected to ${url}`);
     });
 
     // Worker disconnected from scheduler
@@ -214,16 +226,6 @@ async function toggleWorker() {
       // Payment event inside sandbox
       sandbox.on("payment", (payment) => {
         log(`[sandbox_${sandbox.id}.payment] ${payment} ⊇`);
-      });
-
-      // General warnings
-      sandbox.on("warning", (warn) => {
-        log(`[sandbox_${sandbox.id}.warning] ${JSON.stringify(warn, null, 2)}`);
-      });
-
-      // Errors inside the sandbox JS environment
-      sandbox.on("error", (err) => {
-        log(`[sandbox_${sandbox.id}.error] ${err && err.message ? err.message : err}`);
       });
 
       // Sandbox terminated cleanly
