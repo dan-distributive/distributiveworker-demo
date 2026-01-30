@@ -1,13 +1,51 @@
 let worker = null;
 
+function getSelectedComputeGroup() {
+  return document.querySelector(
+    'input[name="computeGroup"]:checked'
+  ).value;
+}
+
 async function toggleWorker() {
   // Logging function
+  const MAX_LOG_LINES = 500;
+  let logBuffer = [];
   const consoleEl = document.querySelector("#workerConsole");
   const log = (msg) => {
     const ts = new Date().toLocaleTimeString();
-    consoleEl.value += `[${ts}] ${msg}\n\n`;
+    logBuffer.push(`[${ts}] ${msg}`);
+    if (logBuffer.length > MAX_LOG_LINES) {
+      logBuffer.splice(0, logBuffer.length - MAX_LOG_LINES);
+    }
+    consoleEl.value = logBuffer.join("\n\n");
     consoleEl.scrollTop = consoleEl.scrollHeight;
   };
+  
+  // Radio button selection
+  const selectedGroup = getSelectedComputeGroup();
+
+  // Payment account user input
+  const paymentInput = document.getElementById("payment-account");
+  const paymentAddress = paymentInput.value.trim();
+
+  // Max sandboxes user input
+  const maxSandboxesInput = document.getElementById("max-sandboxes");
+  const maxSandboxes = maxSandboxesInput.value.trim() || 4;
+
+  // Allowed origins user input
+  const originsInput = document.getElementById("allowed-origins");
+  const allowedOrigins = originsInput.value.trim() || null;
+
+  // Allowed job ids user input
+  const jobIdInput = document.getElementById("allowed-job-id");
+  const allowedJobID = jobIdInput.value.trim() || false;
+
+  // Minimum wage user input
+  const mwCPU = parseFloat(document.querySelector('input[name="mw-cpu"]').value) || 0;
+  const mwGPU = parseFloat(document.querySelector('input[name="mw-gpu"]').value) || 0;
+  const mwIn  = parseFloat(document.querySelector('input[name="mw-in"]').value)  || 0;
+  const mwOut = parseFloat(document.querySelector('input[name="mw-out"]').value) || 0;
+
 
   if (!worker) {
     //
@@ -21,63 +59,52 @@ async function toggleWorker() {
     //
     // Configure Worker
     //
-    worker = new dcp.worker.DistributiveWorker({
+    const workerConfig = {
       
       // Set the DCP Bank account where compute credits earned from work are deposited
-      paymentAddress: new dcp.wallet.Address(
-        "0x079dac0612c710ab4e975dab7171c7e4bef78c5a" // or (await dcp.wallet.get()).address
-      ),
-
-      /*
-      // Set the compute group(s) the worker will join
-      computeGroups: [
-        { joinKey: "demo", joinSecret: "dcp" },
-      ],
-
-      // Configure whether this worker remains part of the public compute group or opts out
-      leavePublicGroup: true,
-      */
+      paymentAddress: new dcp.wallet.Address(paymentAddress), // or (await dcp.wallet.get()).address
 
       // Restrict the worker to specific job IDs, e.g. ["jeHgigTXPURl6xMgUz9oNw", "..."]
-      jobIds: false,
+      jobIds: allowedJobID,
 
       // Set number CPU and GPU cores available to use
-      cores: { cpu: 4, gpu: 1 },
+      cores: { cpu: maxSandboxes, gpu: 1 },
 
       // Set target % utilization for cpu and gpu
       utilization: { cpu: 1, gpu: 1 },
 
       // Set the maximum number of concurrent sandboxes that can execute job slices
-      maxSandboxes: 4,
+      maxSandboxes: maxSandboxes,
 
       // Set minimum-wage vector defining the lowest-paying slices it will accept
       minimumWage: {
-        "CPU":  0.0060 /1000,      //   Compute Credits per CPU-second
-        "GPU":  0.0241 /1000,      //   Compute Credits per GPU-second
-        "in":   0.0112 /1000,      //   Compute Credits per MB of inbound network traffic
-        "out":  0.0112 /1000,      //   Compute Credits per MB of outbound network traffic
+        CPU: mwCPU,       //   Compute Credits per CPU-second
+        GPU: mwGPU,       //   Compute Credits per GPU-second
+        in:  mwIn,        //   Compute Credits per MB of inbound network traffic
+        out: mwOut        //   Compute Credits per MB of outbound network traffic
       },
       
       // Set allow origins
       allowOrigins: {
-        fetchWorkFunctions: [
-          null
-        ],
-        fetchArguments: [
-          null
-        ],
-        fetchData: [
-          null
-        ],
-        sendResults: [
-          null
-        ],
-        any: [
-          null
-        ]
+        fetchWorkFunctions: [null],
+        fetchArguments: [null],
+        fetchData: [null],
+        sendResults: [null],
+        any: [allowedOrigins]
       },
 
-    });
+    };
+
+    // Specify compute group(s)
+    if (selectedGroup === "private") {
+      workerConfig.computeGroups = [
+        { joinKey: "smart", joinSecret: "tech" }
+      ];
+      workerConfig.leavePublicGroup = true;
+    };
+    
+    // START THE WORKER
+    worker = new dcp.worker.DistributiveWorker(workerConfig);
 
 
     //
@@ -202,21 +229,41 @@ async function toggleWorker() {
 
       // Progress events emitted from job code
       sandbox.on("progress", (value) => {
-        log(`[sandbox_${sandbox.id}.progress] ${value.toFixed(1)}%`);
+        if (typeof value === "number") {
+          log(`[sandbox_${sandbox.id}.progress] ${value.toFixed(1)}%`);
+          return;
+        }
+      
+        if (value == null) {
+          log(`[sandbox_${sandbox.id}.progress] progress update`);
+          return;
+        }
+      
+        // object or string progress
+        log(`[sandbox_${sandbox.id}.progress] ${JSON.stringify(value)}`);
       });
 
       // Metrics from job code (GPU/CPU usage, etc.)
       sandbox.on("metrics", (slice, m) => {
+        if (!m) return; // skip if metrics object is missing
+      
+        const elapsed = m.elapsed?.toFixed(3) ?? "N/A";
+        const CPU = m.CPU?.toFixed(3) ?? "N/A";
+        const GPU = m.GPU?.toFixed(3) ?? "N/A";
+        const inboundKB = m.in != null ? (m.in / 1024).toFixed(3) : "N/A";
+        const outboundKB = m.out != null ? (m.out / 1024).toFixed(3) : "N/A";
+      
         log(
           `[sandbox_${sandbox.id}.metrics] ` +
           `slice: ${slice}, ` +
-          `elapsed: ${m.elapsed.toFixed(3)} sec, ` +
-          `CPU: ${m.CPU.toFixed(3)} sec, ` +
-          `GPU: ${m.GPU.toFixed(3)} sec, ` +
-          `in: ${(m.in / 1024).toFixed(3)} KB, ` +
-          `out: ${(m.out / 1024).toFixed(3)} KB`
+          `elapsed: ${elapsed} sec, ` +
+          `CPU: ${CPU} sec, ` +
+          `GPU: ${GPU} sec, ` +
+          `in: ${inboundKB} KB, ` +
+          `out: ${outboundKB} KB`
         );
       });
+      
 
       // Slice finished
       sandbox.on("sliceEnd", (sliceNumber) => {
@@ -249,6 +296,7 @@ async function toggleWorker() {
             ? worker.config.computeGroups.map(g => g.joinKey).join(", ")
             : "DCP Global (Public Group)"}`
     );
+    paymentInput.disabled = true;
 
   } else {
     //
