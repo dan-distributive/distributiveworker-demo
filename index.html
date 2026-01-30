@@ -23,7 +23,7 @@
             alt="DCP logo"
             class="title-logo"
           />
-          <h1 class="title">DistributiveWorker demo</h1>
+          <h1 class="title">DCP Browser Worker</h1>
         </div>
 
         <div class="text-with-link">
@@ -61,21 +61,82 @@
 
       <!-- Worker info -->
       <div class="worker-info">
-        <p class="worker-key">
+        <p class="worker-key worker-section-title">
           - Worker config -
         </p>
         <p class="worker-key">
-          Compute groups:
+          Compute group:
           <span class="worker-value">
-            DCP Global
+        
+            <label class="radio-option">
+              <input type="radio" name="computeGroup" value="global" checked />
+              <span class="custom-radio"></span>
+              <span class="radio-label">public</span>
+            </label>
+            
+            <label class="radio-option" style="margin-left:12px;">
+              <input type="radio" name="computeGroup" value="private" />
+              <span class="custom-radio"></span>
+              <span class="radio-label">SMART</span>
+            </label>
+            
           </span>
         </p>
+        
         <p class="worker-key">
           Deposit account:
-          <span class="worker-value">
-            0x079dac0612c710ab4e975dab7171c7e4bef78c5a
-          </span>
+          <input
+            id="payment-account"
+            class="worker-value"
+            type="text"
+            value="0x079dac0612c710ab4e975dab7171c7e4bef78c5a"
+            placeholder="Enter your deposit account"
+          />
         </p>
+
+        <p class="worker-key">
+          Minimum wage:
+          <span class="min-wage-inputs">
+            CPU <input type="text" name="mw-cpu" maxlength="10" value = "0" placeholder="0" class="mw-input" />
+            GPU <input type="text" name="mw-gpu" maxlength="10" value = "0" placeholder="0" class="mw-input" />
+            in  <input type="text" name="mw-in" maxlength="10" value = "0" placeholder="0" class="mw-input" />
+            out <input type="text" name="mw-out" maxlength="10" value = "0" placeholder="0" class="mw-input" />
+          </span>
+        </p>   
+
+        <p class="worker-key">
+          Max sandboxes:
+          <input
+            id="max-sandboxes"
+            class="worker-value"
+            type="text"
+            value="4"
+            placeholder="Enter max sandboxes"
+          />
+        </p>
+
+        <p class="worker-key">
+          Allowed job IDs:
+          <input
+            id="allowed-job-id"
+            class="worker-value"
+            type="text"
+            value=""
+            placeholder="any"
+          />
+        </p>
+
+        <p class="worker-key">
+          Allowed origins:
+          <input
+            id="allowed-origins"
+            class="worker-value"
+            type="text"
+            value=""
+            placeholder="none"
+          />
+        </p>     
+        
         <p class="worker-key">
           Credits earned:
           <span id="total-earned" class="worker-value">
