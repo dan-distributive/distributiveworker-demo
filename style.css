@@ -40,6 +40,24 @@ body {
   flex-shrink: 0;     /* prevent shrinking */
 }
 
+.min-wage-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.min-wage-inputs-wrapper {
+  display: inline-block;
+  white-space: nowrap;   /* critical part: keep the whole group together */
+}
+
+.min-wage-inputs {
+  display: inline-flex;
+  gap: 12px;
+  align-items: center;
+}
+
 
 /* =========================================================
    Typography
@@ -96,6 +114,13 @@ body {
   font-size: clamp(12px, 1.5vw, 14px);
 }
 
+.worker-key-input {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
 
 /* Generic worker-value for payment / origins */
 .worker-value {
@@ -132,8 +157,9 @@ body {
   color: #6ec495;              /* green when user types */
 }
 
-
-
+.short-field {
+  width: 5ch;   /* safer if you ever allow double digits like 16, 32, etc. */
+}
 
 
 .worker-section-title {
@@ -221,6 +247,25 @@ body {
     border-bottom: var(--corner-thickness) solid var(--corner-color);
     border-right: var(--corner-thickness) solid var(--corner-color);
   }
+
+  .button-row {
+    width: 100%;
+    display: flex;
+  }
+  /*
+  @media (min-width: 601px) {
+    .button-row {
+      justify-content: flex-start;
+      padding-left: 40px;
+    }
+  }
+  
+  @media (max-width: 600px) {
+    .button-row {
+      justify-content: center;
+    }
+  }
+  */
   
 
 /* =========================================================
@@ -262,7 +307,45 @@ body {
   .text {
     letter-spacing: 0.2px;
   }
+
+  .hide-on-mobile {
+    display: none;
+  }
 }
+
+/* =========================================================
+   iOS Safari form normalization
+   ========================================================= */
+
+   input,
+   textarea,
+   select,
+   button {
+     -webkit-appearance: none;
+     appearance: none;
+     border-radius: 0;
+     background-image: none;
+   }
+   
+   /* Prevent iOS zoom on focus */
+   input,
+   textarea {
+     font-size: 16px;
+   }
+   
+   /* Remove Safari inner shadows */
+   input {
+     -webkit-box-shadow: none;
+     box-shadow: none;
+   }
+   
+   /* Ensure custom radios are truly custom */
+   .radio-option input {
+     -webkit-appearance: none;
+     appearance: none;
+   }
+   
+
 
 /* ============================================
    Radio button color control
