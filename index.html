@@ -29,9 +29,11 @@
         <div class="text-with-link">
           <p class="text">
             This webpage demonstrates a working integration of the DistributiveWorker
-            class. The worker joins the DCP Global Compute Group, deposits earned credits
-            into a pre-configured account, logs events, and more. Check out the GitHub
-            source to explore and modify it yourself:
+            class.
+            <span class="hide-on-mobile">
+              The worker fetches tasks from the DCP Sceduler, deposits earned credits
+              into a pre-configured account, logs events, and more.
+            </span> Check out the GitHub source to explore and modify it yourself:
           <a
             href="https://github.com/dan-distributive/distributiveworker-demo"
             class="link"
@@ -83,7 +85,7 @@
           </span>
         </p>
         
-        <p class="worker-key">
+        <p class="worker-key worker-key-input">
           Deposit account:
           <input
             id="payment-account"
@@ -94,49 +96,55 @@
           />
         </p>
 
-        <p class="worker-key">
-          Minimum wage:
-          <span class="min-wage-inputs">
-            CPU <input type="text" name="mw-cpu" maxlength="10" value = "0" placeholder="0" class="mw-input" />
-            GPU <input type="text" name="mw-gpu" maxlength="10" value = "0" placeholder="0" class="mw-input" />
-            in  <input type="text" name="mw-in" maxlength="10" value = "0" placeholder="0" class="mw-input" />
-            out <input type="text" name="mw-out" maxlength="10" value = "0" placeholder="0" class="mw-input" />
-          </span>
-        </p>   
+        <span class="hide-on-mobile">
+          <p class="worker-key min-wage-row">
+            Minimum wage:
+            <span class="min-wage-inputs-wrapper">
+              <span class="min-wage-inputs">
+                CPU <input type="text" name="mw-cpu" maxlength="10" value="0" class="mw-input" />
+                GPU <input type="text" name="mw-gpu" maxlength="10" value="0" class="mw-input" />
+                in  <input type="text" name="mw-in" maxlength="10" value="0" class="mw-input" />
+                out <input type="text" name="mw-out" maxlength="10" value="0" class="mw-input" />
+              </span>
+            </span>
+          </p> 
+        </span>
 
         <p class="worker-key">
           Max sandboxes:
           <input
             id="max-sandboxes"
-            class="worker-value"
+            class="worker-value short-field"
             type="text"
             value="4"
             placeholder="Enter max sandboxes"
           />
         </p>
-
-        <p class="worker-key">
-          Allowed job IDs:
-          <input
-            id="allowed-job-id"
-            class="worker-value"
-            type="text"
-            value=""
-            placeholder="any"
-          />
-        </p>
-
-        <p class="worker-key">
-          Allowed origins:
-          <input
-            id="allowed-origins"
-            class="worker-value"
-            type="text"
-            value=""
-            placeholder="none"
-          />
-        </p>     
         
+        <span class="hide-on-mobile">
+          <p class="worker-key">
+            Allowed job IDs:
+            <input
+              id="allowed-job-id"
+              class="worker-value"
+              type="text"
+              value=""
+              placeholder="any"
+            />
+          </p>
+
+          <p class="worker-key">
+            Allowed origins:
+            <input
+              id="allowed-origins"
+              class="worker-value"
+              type="text"
+              value=""
+              placeholder="none"
+            />
+          </p>    
+        </span>
+
         <p class="worker-key">
           Credits earned:
           <span id="total-earned" class="worker-value">
